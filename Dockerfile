@@ -34,6 +34,11 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45F
 COPY assets/build/ ${REDMINE_BUILD_DIR}/
 RUN bash ${REDMINE_BUILD_DIR}/install.sh
 
+# redmine backlogs
+RUN git clone -b feature/redmine3 https://github.com/backlogs/redmine_backlogs.git ${REDMINE_INSTALL_DIR}/plugins/redmine_backlogs
+RUN sed -i -e 's/gem "nokogiri".*/gem "nokogiri", ">= 1.6.7.2"/g' ${REDMINE_INSTALL_DIR}/plugins/redmine_backlogs/Gemfile
+RUN sed -i -e 's/gem "capybara", "~> 1"//g' ${REDMINE_INSTALL_DIR}/plugins/redmine_backlogs/Gemfile
+
 COPY assets/runtime/ ${REDMINE_RUNTIME_DIR}/
 COPY assets/tools/ /usr/bin/
 COPY entrypoint.sh /sbin/entrypoint.sh
